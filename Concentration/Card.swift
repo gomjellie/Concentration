@@ -1,11 +1,3 @@
-//
-//  Card.swift
-//  Concentration
-//
-//  Created by Jacky on 2020/06/25.
-//  Copyright © 2020 Jacky. All rights reserved.
-//
-
 import Foundation
 
 struct Card {

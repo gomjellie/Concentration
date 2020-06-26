@@ -1,10 +1,10 @@
 import UIKit
 
 class ViewController: UIViewController {
-    var game = Concentration(numberOfPairsOfCards: 8) {
-        didSet {
-            flipCount = 0
-        }
+    lazy var game = Concentration(numberOfPairsOfCards: numberOfPairsOfCards)
+    
+    var numberOfPairsOfCards: Int {
+        return (cardButtons.count + 1) / 2
     }
     
     var flipCount = 0 {
@@ -53,7 +53,8 @@ class ViewController: UIViewController {
     }
     
     func newGame() {
-        game = Concentration(numberOfPairsOfCards: (cardButtons.count + 1) / 2)
+        game = Concentration(numberOfPairsOfCards: numberOfPairsOfCards)
+        flipCount = 0
         (theme, _) = themes.randomElement()!
         emoji.removeAll()
         backGroundUIView.backgroundColor = backGroundColor
@@ -128,7 +129,6 @@ class ViewController: UIViewController {
     var emoji =  [Int:String]()
     
     func emoji(for card: Card) -> String {
-        print("card.identifier : \(card.identifier)")
         if emoji[card.identifier] == nil, emojiChoices.count > 0 {
             let randomIndex = Int(arc4random_uniform(UInt32(emojiChoices.count)))
             emoji[card.identifier] = emojiChoices.remove(at: randomIndex)
