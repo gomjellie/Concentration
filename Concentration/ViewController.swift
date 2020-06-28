@@ -1,37 +1,37 @@
 import UIKit
 
 class ViewController: UIViewController {
-    lazy var game = Concentration(numberOfPairsOfCards: numberOfPairsOfCards)
+    private lazy var game = Concentration(numberOfPairsOfCards: numberOfPairsOfCards)
     
     var numberOfPairsOfCards: Int {
         return (cardButtons.count + 1) / 2
     }
     
-    var flipCount = 0 {
+    private var flipCount = 0 {
         didSet {
             flipCountLabel.text = "Flips: \(flipCount)"
         }
     }
     
-    var gameScore = 0 {
+    private var gameScore = 0 {
         didSet {
             scoreLabel.text = "Score: \(gameScore)"
         }
     }
 
-    @IBOutlet weak var flipCountLabel: UILabel!
+    @IBOutlet private weak var flipCountLabel: UILabel!
     
-    @IBOutlet weak var scoreLabel: UILabel!
+    @IBOutlet private weak var scoreLabel: UILabel!
     
-    @IBOutlet var cardButtons: [UIButton]!
+    @IBOutlet private var cardButtons: [UIButton]!
     
     override func viewDidLoad() {
         newGame()
     }
     
-    @IBOutlet var backGroundUIView: UIView!
+    @IBOutlet private var backGroundUIView: UIView!
     
-    @IBAction func touchCard(_ sender: UIButton) {
+    @IBAction private func touchCard(_ sender: UIButton) {
         if let cardIndex = cardButtons.firstIndex(of: sender) {
             let card = game.cards[cardIndex]
             if card.isMatched {
@@ -46,13 +46,13 @@ class ViewController: UIViewController {
         }
     }
     
-    @IBOutlet weak var newGameButton: UIButton!
+    @IBOutlet private weak var newGameButton: UIButton!
     
-    @IBAction func onTouchNewGame(_ sender: UIButton) {
+    @IBAction private func onTouchNewGame(_ sender: UIButton) {
         newGame()
     }
     
-    func newGame() {
+    private func newGame() {
         game = Concentration(numberOfPairsOfCards: numberOfPairsOfCards)
         flipCount = 0
         (theme, _) = themes.randomElement()!
@@ -65,7 +65,7 @@ class ViewController: UIViewController {
         updateViewFromModel()
     }
     
-    func updateViewFromModel() {
+    private func updateViewFromModel() {
         for index in cardButtons.indices {
             let button = cardButtons[index]
             let card = game.cards[index]
@@ -80,9 +80,9 @@ class ViewController: UIViewController {
         gameScore = game.score
     }
     
-    var emojiChoices = ["👻", "🎃", "🦇", "😈", "🕷", "🌜", "🔥", "🍭", "🍷"]
+    private var emojiChoices = ["👻", "🎃", "🦇", "😈", "🕷", "🌜", "🔥", "🍭", "🍷"]
     
-    var theme = "halloween" {
+    private var theme = "halloween" {
         didSet {
             emojiChoices = themes[theme]!["icons"] as! [String]
             backGroundColor = themes[theme]!["backGroundColor"] as! UIColor
@@ -90,10 +90,10 @@ class ViewController: UIViewController {
         }
     }
     
-    var backGroundColor = #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
-    var primaryColor = #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
+    private var backGroundColor = #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
+    private var primaryColor = #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
     
-    var themes = [
+    private var themes = [
         "halloween": [
             "icons": ["👻", "🎃", "🦇", "😈", "🕷", "🌜", "🔥", "🍭", "🍷"],
             "backGroundColor": #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1),
@@ -126,14 +126,20 @@ class ViewController: UIViewController {
         ],
     ]
 
-    var emoji =  [Int:String]()
+    private var emoji =  [Int:String]()
     
-    func emoji(for card: Card) -> String {
+    private func emoji(for card: Card) -> String {
         if emoji[card.identifier] == nil, emojiChoices.count > 0 {
-            let randomIndex = Int(arc4random_uniform(UInt32(emojiChoices.count)))
+            let randomIndex = emojiChoices.count.arc4random
             emoji[card.identifier] = emojiChoices.remove(at: randomIndex)
         }
         
         return emoji[card.identifier] ?? "?";
+    }
+}
+
+extension Int {
+    var arc4random: Int {
+        return Int(arc4random_uniform(UInt32(self)))
     }
 }
