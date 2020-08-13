@@ -4,20 +4,11 @@ import Foundation
 class Concentration {
     private(set) var cards =  [Card]()
     var score = 0
-    var cardLog = [Int: Set<Int>]() // identifier -> [index]
+    var cardLog = [Card: Set<Int>]() // identifier -> [index]
     
     private var indexOfOneAndOnlyFaceUpCard: Int? {
         get {
-            var foundIndex: Int?
-            for index in cards.indices {
-                if cards[index].isFaceUp {
-                    if foundIndex != nil {
-                         return nil
-                    }
-                    foundIndex = index
-                }
-            }
-            return foundIndex
+            return cards.indices.filter { cards[$0].isFaceUp }.oneAndOnly
         }
         set {
             for index in cards.indices {
@@ -29,7 +20,7 @@ class Concentration {
     func chooseCard(at index: Int) {
         assert(cards.indices.contains(index), "Concentration.chooseCard(at: \(index)): choosen index not in the cards")
         
-        let id = cards[index].identifier
+        let id = cards[index]
         if let logOfId = cardLog[id] {
             cardLog[id] = logOfId.union([index])
         } else {
@@ -39,7 +30,7 @@ class Concentration {
         if !cards[index].isMatched {
             if let matchIndex = indexOfOneAndOnlyFaceUpCard, matchIndex != index {
                 // check if card match
-                if cards[matchIndex].identifier == cards[index].identifier {
+                if cards[matchIndex] == cards[index] {
                     cards[matchIndex].isMatched = true
                     cards[index].isMatched = true
                     score += 2
@@ -48,7 +39,7 @@ class Concentration {
                     if cardLog[id]!.count == 2 {
                         score -= 1
                     }
-                    if cardLog[cards[matchIndex].identifier]?.count == 2 {
+                    if cardLog[cards[matchIndex]]?.count == 2 {
                         score -= 1
                     }
                 }
@@ -73,5 +64,11 @@ class Concentration {
             cards[randomCardIndex] = cards[cardIndexToSwap]
             cards[cardIndexToSwap] = tempCard
         }
+    }
+}
+
+extension Collection {
+    var oneAndOnly: Element? {
+        return count == 1 ? first : nil
     }
 }

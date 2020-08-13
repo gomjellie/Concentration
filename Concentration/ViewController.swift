@@ -9,7 +9,13 @@ class ViewController: UIViewController {
     
     private var flipCount = 0 {
         didSet {
-            flipCountLabel.text = "Flips: \(flipCount)"
+            
+            let attributes: [NSAttributedString.Key: Any] = [
+                .strokeWidth: 5.0,
+                .strokeColor: #colorLiteral(red: 0.9372549057, green: 0.3490196168, blue: 0.1921568662, alpha: 1),
+            ]
+            let attributedString = NSAttributedString(string: "Flips: \(flipCount)", attributes: attributes)
+            flipCountLabel.attributedText = attributedString
         }
     }
     
@@ -126,15 +132,15 @@ class ViewController: UIViewController {
         ],
     ]
 
-    private var emoji =  [Int:String]()
+    private var emoji =  [Card:String]()
     
     private func emoji(for card: Card) -> String {
-        if emoji[card.identifier] == nil, emojiChoices.count > 0 {
+        if emoji[card] == nil, emojiChoices.count > 0 {
             let randomIndex = emojiChoices.count.arc4random
-            emoji[card.identifier] = emojiChoices.remove(at: randomIndex)
+            emoji[card] = emojiChoices.remove(at: randomIndex)
         }
         
-        return emoji[card.identifier] ?? "?";
+        return emoji[card] ?? "?";
     }
 }
 
